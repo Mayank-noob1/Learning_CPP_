@@ -194,7 +194,7 @@ double sec(double rad)
 {
     return inv(cos(rad));
 };
-// log(1+x)
+// log(x)
 double log(double x)
 {
     if (x < -1)
@@ -504,7 +504,7 @@ int main()
     lookup_table["pi"] = 3.14159265359;
     // Instruction:
     cout << "Add ';' character at the end of input for answer." << endl;
-    // Taking input(From Stroustoup)
+    // Taking input(From Stroustoup book)
     try{
         while (cin)
         {
