@@ -2,7 +2,8 @@
 Grammar:
     BLOCK := EXPR ;
     EXPR := TERM + EXPR | TERM - EXPR | TERM 
-    TERM := PRIMARY / TERM | PRIMARY * TERM  | PRIMARY % TERM| PRIMARY ^ TERM | PRIMARY ! | PRIMARY
+    TERM := PREPRIMARY / TERM | PREPRIMARY * TERM  | PREPRIMARY % TERM| PREPRIMARY
+    PREPRIMARY = PRIMARY ^ PREPRIMARY | PRIMARY !
     PRIMARY := (EXPR) | FUN PRIMARY | NUM | -PRIMARY | CONSTANT | +PRIMARY
     NUM := DIGIT NUM | DIGIT
     FUN := SIN | COS | TAN | COT | COSEC | SEC | SQRT | LOG
@@ -204,7 +205,7 @@ double log(double x)
     x = (x-1)/(x+1);
     int i = (1);
     double ans = double(0);
-    int limit = (100);
+    int limit = (1000000);
     while (i < limit)
     {
         ans += double(pow(x, i)) / double(i);
@@ -344,6 +345,7 @@ Token get_token()
     }
 }
 double expression();        //Definition to break cyclic dependency. Declaration below.
+
 double primary()
 {
     get_token();
@@ -424,6 +426,12 @@ double primary()
             double exp = primary();
             return sqrt(exp);
         }
+        else if (last == "abs")
+        {
+            last.clear();
+            double exp = primary();
+            return abso(exp);
+        }
         else
         {
             throw std::invalid_argument("token expected.");
@@ -433,32 +441,43 @@ double primary()
         throw std::invalid_argument("Valid token expected.");
     }
 }
-double term()
-{
+double pre_primary(){
     double left = primary();
     while (true)
     {
         switch (Crnt_token)
         {
-        case (DIV):{
-            left = div(left, primary());
-            break;
-        }
-        case (MUL):{
-            left = mul(left, primary());
-            break;
-        }
-        case (MOD):{
-            left = mod(left, primary());
-            break;
-        }
         case (FAC):{
             left = fact(left);
             get_token();
             return left;
         }
         case (POW):{
-            left = pow(left, int(primary()));
+            left = pow(left, int(pre_primary()));
+            break;
+        }
+        default:
+            return left;
+        }
+    }
+}
+double term()
+{
+    double left = pre_primary();
+    while (true)
+    {
+        switch (Crnt_token)
+        {
+        case (DIV):{
+            left = div(left, pre_primary());
+            break;
+        }
+        case (MUL):{
+            left = mul(left, pre_primary());
+            break;
+        }
+        case (MOD):{
+            left = mod(left, pre_primary());
             break;
         }
         default:
@@ -499,12 +518,13 @@ int main()
     func_name.push_back("log");
     func_name.push_back("inv");
     func_name.push_back("log");
+    func_name.push_back("abs");
     func_name.push_back("sqrt");
     lookup_table["e"] = 2.71828182845;
     lookup_table["pi"] = 3.14159265359;
     // Instruction:
     cout << "Add ';' character at the end of input for answer." << endl;
-    // Taking input(From Stroustoup book)
+    // Taking input(From Stroustoup)
     try{
         while (cin)
         {
