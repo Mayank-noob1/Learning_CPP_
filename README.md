@@ -20,3 +20,7 @@ This repo contains the work I am doing while learning C++.
   #### Pre-requisite:
   1) How to write and interpret a grammar.
   2) How to tokenize a stream.
+   #### BONUS:
+   1) Calculator.exe contains a basic calculator app for windows made with the help of MFC.
+### 2. Mat_Vec.cpp:
+   This contains all the matrix and vector operations I know (I must have missed some). It contains a vector wrapper for the matrix class. You can get inverse , adjoint, transpose, multiplication etc. for matrix class and dot product , addition etc. for vector. I highly suggest you to check code before using it, there are some futile lines due to poor design.
